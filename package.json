@@ -1,0 +1,26 @@
+{
+  "name": "srt-encoding-fixer",
+  "version": "1.0.0",
+  "description": "CLI tool to fix broken Romanian SRT subtitles (encoding and cedilla/comma diacritics).",
+  "main": "fix-subs.js",
+  "bin": {
+    "fix-subs": "./fix-subs.js"
+  },
+  "scripts": {
+    "fix-example": "node fix-subs.js srt/jerry-broken.srt srt/jerry-fixed.srt"
+  },
+  "keywords": [
+    "srt",
+    "subtitles",
+    "encoding",
+    "romanian",
+    "cp1250",
+    "cp1252",
+    "utf8"
+  ],
+  "author": "Mihai-Nicolae Dulgheru",
+  "license": "MIT",
+  "dependencies": {
+    "iconv-lite": "^0.7.0"
+  }
+}
