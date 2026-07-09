@@ -145,5 +145,6 @@ vite.config.ts.timestamp-*
 # ...but keep the committed sample used by the `sync-example` npm script
 !srt/example.srt
 
-# Superpowers SDD scratch (the specs/plans under docs/ are tracked on purpose)
+# Superpowers SDD scratch and the specs/plans docs (kept local, out of Git)
 .superpowers/
+docs/
