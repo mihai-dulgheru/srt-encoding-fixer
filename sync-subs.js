@@ -144,7 +144,8 @@ Resynchronize SRT subtitle timings.
       --from <fps>        source frame rate (positive number)
       --to <fps>          target frame rate (positive number)
       --offset <val>      constant shift; +later, -earlier.
-                          Units: ms (default), s, sec. e.g. -2.5s, 500ms
+                          Units: ms (default), s, sec. e.g. 500ms, 2s.
+                          Negative values need '=': --offset=-2.5s
       --anchor <old=new>  reference point; give exactly twice.
                           Times as HH:MM:SS,mmm or milliseconds.
       --encoding <enc>    decode input with this encoding (default: utf8)
@@ -153,7 +154,7 @@ Resynchronize SRT subtitle timings.
 
 Examples:
   node sync-subs.js movie.srt --from 25 --to 23.976
-  node sync-subs.js in.srt out.srt --offset -2.5s
+  node sync-subs.js in.srt out.srt --offset=-2.5s
   node sync-subs.js in.srt --anchor 00:00:10,000=00:00:12,500 \\
                            --anchor 01:30:00,000=01:30:04,000
 `;

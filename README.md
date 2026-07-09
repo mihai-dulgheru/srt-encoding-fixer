@@ -35,8 +35,9 @@ from encoding. Every timestamp is transformed by `new = old * scale + offset`.
 # Frame-rate conversion (e.g. PAL 25fps source retimed for 23.976fps video)
 node sync-subs.js movie.srt --from 25 --to 23.976
 
-# Constant shift: push all lines 2.5s earlier (+ = later, - = earlier)
-node sync-subs.js in.srt out.srt --offset -2.5s
+# Constant shift: push all lines 2.5s earlier (+ = later, - = earlier).
+# Negative values must use the = form so the leading - isn't read as a flag.
+node sync-subs.js in.srt out.srt --offset=-2.5s
 
 # Two-point anchor: give the correct time of the first and last line;
 # scale and offset are derived automatically.
