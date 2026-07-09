@@ -1,0 +1,11 @@
+1
+00:00:01,000 --> 00:00:03,000
+Exemplu de subtitrare pentru sync-subs.
+
+2
+00:00:04,500 --> 00:00:06,750
+Ține minte: diacriticele corecte sunt ș și ț.
+
+3
+00:01:00,000 --> 00:01:02,500
+O replică mai târzie, pentru testarea scalării.

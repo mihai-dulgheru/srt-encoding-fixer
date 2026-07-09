@@ -142,3 +142,8 @@ vite.config.ts.timestamp-*
 
 # SRT files
 *.srt
+# ...but keep the committed sample used by the `sync-example` npm script
+!srt/example.srt
+
+# Superpowers SDD scratch (the specs/plans under docs/ are tracked on purpose)
+.superpowers/
