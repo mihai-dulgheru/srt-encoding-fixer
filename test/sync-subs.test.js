@@ -88,3 +88,38 @@ test("resolveScaleOffset: errors", () => {
     /cannot be combined/,
   );
 });
+
+const { applyResync } = require("../sync-subs.js");
+
+const SAMPLE =
+  "1\n" +
+  "00:00:10,000 --> 00:00:12,000\n" +
+  "Hello there.\n" +
+  "\n" +
+  "2\n" +
+  "00:41:00,000 --> 00:41:02,000\n" +
+  "General Kenobi.\n";
+
+test("applyResync stretches 25 -> 23.976 (round-half-up), values hand-verified", () => {
+  const scale = 25 / 23.976;
+  const { text, count } = applyResync(SAMPLE, scale, 0);
+  assert.strictEqual(count, 2);
+  // 10000 * 25/23.976 = 10427.09 -> 10427 ; 12000 -> 12512.51 -> 12513
+  assert.match(text, /00:00:10,427 --> 00:00:12,513/);
+  // 2460000 -> 2565065.07 -> 2565065 ; 2462000 -> 2567150.48 -> 2567150
+  assert.match(text, /00:42:45,065 --> 00:42:47,150/);
+  assert.match(text, /Hello there\./);
+  assert.match(text, /General Kenobi\./);
+});
+
+test("applyResync applies constant offset and clamps negatives", () => {
+  const { text } = applyResync(SAMPLE, 1, -15000);
+  // 10000 - 15000 = -5000 -> clamp 0
+  assert.match(text, /00:00:00,000 --> 00:00:00,000/);
+});
+
+test("applyResync leaves non-timing lines untouched", () => {
+  const { text } = applyResync(SAMPLE, 1, 1000);
+  assert.match(text, /^1$/m);
+  assert.match(text, /^2$/m);
+});

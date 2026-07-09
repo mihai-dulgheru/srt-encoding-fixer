@@ -113,4 +113,18 @@ function resolveScaleOffset(opts) {
   return { scale, offset, mode };
 }
 
-module.exports = { timeToMs, msToTime, parseOffset, resolveScaleOffset };
+const TIMING_RE =
+  /(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})/g;
+
+function applyResync(text, scale, offset) {
+  let count = 0;
+  const out = text.replace(TIMING_RE, (m, start, end) => {
+    count += 1;
+    const newStart = msToTime(Math.round(timeToMs(start) * scale + offset));
+    const newEnd = msToTime(Math.round(timeToMs(end) * scale + offset));
+    return `${newStart} --> ${newEnd}`;
+  });
+  return { text: out, count };
+}
+
+module.exports = { timeToMs, msToTime, parseOffset, resolveScaleOffset, applyResync };
