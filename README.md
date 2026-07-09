@@ -28,7 +28,7 @@ node fix-subs.js srt/jerry-broken.srt srt/jerry-fixed.srt
 
 ## Resync timing
 
-`sync-subs.js` fixes subtitle *timing* (frame-rate mismatch or drift), separate
+`sync-subs.js` fixes subtitle _timing_ (frame-rate mismatch or drift), separate
 from encoding. Every timestamp is transformed by `new = old * scale + offset`.
 
 ```bash

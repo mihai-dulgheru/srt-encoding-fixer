@@ -9,10 +9,7 @@ function timeToMs(timeStr) {
   const [h, m, sMs] = timeStr.split(":");
   const [s, ms] = sMs.split(",");
   return (
-    Number(h) * 3600000 +
-    Number(m) * 60000 +
-    Number(s) * 1000 +
-    Number(ms)
+    Number(h) * 3600000 + Number(m) * 60000 + Number(s) * 1000 + Number(ms)
   );
 }
 
@@ -32,7 +29,9 @@ function msToTime(ms) {
 }
 
 function parseOffset(str) {
-  const match = /^([+-]?\d+(?:\.\d+)?)\s*(ms|sec|s)?$/i.exec(String(str).trim());
+  const match = /^([+-]?\d+(?:\.\d+)?)\s*(ms|sec|s)?$/i.exec(
+    String(str).trim(),
+  );
   if (!match) {
     throw new Error(`Invalid --offset value: "${str}"`);
   }
@@ -93,7 +92,12 @@ function resolveScaleOffset(opts) {
   if (hasFrom && hasTo) {
     const from = Number(opts.from);
     const to = Number(opts.to);
-    if (!Number.isFinite(from) || from <= 0 || !Number.isFinite(to) || to <= 0) {
+    if (
+      !Number.isFinite(from) ||
+      from <= 0 ||
+      !Number.isFinite(to) ||
+      to <= 0
+    ) {
       throw new Error("--from and --to must be positive numbers.");
     }
     scale = from / to;
@@ -118,8 +122,7 @@ function resolveScaleOffset(opts) {
   return { scale, offset, mode };
 }
 
-const TIMING_RE =
-  /(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})/g;
+const TIMING_RE = /(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})/g;
 
 function applyResync(text, scale, offset) {
   let count = 0;
@@ -132,7 +135,13 @@ function applyResync(text, scale, offset) {
   return { text: out, count };
 }
 
-module.exports = { timeToMs, msToTime, parseOffset, resolveScaleOffset, applyResync };
+module.exports = {
+  timeToMs,
+  msToTime,
+  parseOffset,
+  resolveScaleOffset,
+  applyResync,
+};
 
 const USAGE = `Usage: node sync-subs.js <input> [output] [options]
 
@@ -206,7 +215,10 @@ function main() {
   }
 
   const parsed = path.parse(inputPath);
-  const defaultOut = path.join(parsed.dir, `${parsed.name}.synced${parsed.ext || ".srt"}`);
+  const defaultOut = path.join(
+    parsed.dir,
+    `${parsed.name}.synced${parsed.ext || ".srt"}`,
+  );
   const outputPath = values.output || positionals[1] || defaultOut;
 
   const { scale, offset, mode } = resolveScaleOffset({

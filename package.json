@@ -10,7 +10,11 @@
   "scripts": {
     "fix-example": "node fix-subs.js srt/jerry-broken.srt srt/jerry-fixed.srt",
     "sync-example": "node sync-subs.js srt/example.srt srt/example.synced.srt --from 25 --to 23.976",
-    "test": "node --test"
+    "test": "node --test",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "keywords": [
     "srt",
@@ -28,5 +32,12 @@
   "license": "MIT",
   "dependencies": {
     "iconv-lite": "^0.7.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.7.0",
+    "prettier": "^3.9.5"
   }
 }

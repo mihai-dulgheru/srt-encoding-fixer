@@ -76,7 +76,10 @@ test("resolveScaleOffset: anchor accepts timestamp strings", () => {
 
 test("resolveScaleOffset: errors", () => {
   assert.throws(() => resolveScaleOffset({}), /Nothing to do/);
-  assert.throws(() => resolveScaleOffset({ from: "25" }), /both --from and --to/);
+  assert.throws(
+    () => resolveScaleOffset({ from: "25" }),
+    /both --from and --to/,
+  );
   assert.throws(() => resolveScaleOffset({ from: "0", to: "24" }), /positive/);
   assert.throws(() => resolveScaleOffset({ anchors: ["1=2"] }), /exactly two/);
   assert.throws(
