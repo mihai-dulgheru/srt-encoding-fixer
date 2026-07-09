@@ -1,6 +1,7 @@
 # srt-encoding-fixer
 
 [![CI](https://github.com/mihai-dulgheru/srt-encoding-fixer/actions/workflows/ci.yml/badge.svg)](https://github.com/mihai-dulgheru/srt-encoding-fixer/actions/workflows/ci.yml)
+[![version](https://img.shields.io/github/package-json/v/mihai-dulgheru/srt-encoding-fixer)](https://github.com/mihai-dulgheru/srt-encoding-fixer/blob/main/package.json)
 
 Small Node.js CLI tool to fix broken Romanian `.srt` subtitle files:
 
