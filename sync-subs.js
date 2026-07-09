@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+const fs = require("fs");
+const path = require("path");
+const { parseArgs } = require("util");
+const iconv = require("iconv-lite");
+
 function timeToMs(timeStr) {
   const [h, m, sMs] = timeStr.split(":");
   const [s, ms] = sMs.split(",");
@@ -128,3 +133,122 @@ function applyResync(text, scale, offset) {
 }
 
 module.exports = { timeToMs, msToTime, parseOffset, resolveScaleOffset, applyResync };
+
+const USAGE = `Usage: node sync-subs.js <input> [output] [options]
+
+Resynchronize SRT subtitle timings.
+
+  -i, --input <path>      input .srt (or 1st positional)
+  -o, --output <path>     output .srt (or 2nd positional;
+                          default: "<input>.synced.srt")
+      --from <fps>        source frame rate (positive number)
+      --to <fps>          target frame rate (positive number)
+      --offset <val>      constant shift; +later, -earlier.
+                          Units: ms (default), s, sec. e.g. -2.5s, 500ms
+      --anchor <old=new>  reference point; give exactly twice.
+                          Times as HH:MM:SS,mmm or milliseconds.
+      --encoding <enc>    decode input with this encoding (default: utf8)
+      --dry-run           print computed params + preview; write nothing
+  -h, --help              show this help
+
+Examples:
+  node sync-subs.js movie.srt --from 25 --to 23.976
+  node sync-subs.js in.srt out.srt --offset -2.5s
+  node sync-subs.js in.srt --anchor 00:00:10,000=00:00:12,500 \\
+                           --anchor 01:30:00,000=01:30:04,000
+`;
+
+function stripBom(str) {
+  return str.charCodeAt(0) === 0xfeff ? str.slice(1) : str;
+}
+
+function previewCues(original, resynced) {
+  const re = /(\d{2}:\d{2}:\d{2},\d{3}) --> (\d{2}:\d{2}:\d{2},\d{3})/g;
+  const before = original.match(re) || [];
+  const after = resynced.match(re) || [];
+  const lines = [];
+  if (before.length > 0) {
+    lines.push(`  first: ${before[0]}  ->  ${after[0]}`);
+  }
+  if (before.length > 1) {
+    const i = before.length - 1;
+    lines.push(`  last:  ${before[i]}  ->  ${after[i]}`);
+  }
+  return lines.join("\n");
+}
+
+function main() {
+  const { values, positionals } = parseArgs({
+    allowPositionals: true,
+    options: {
+      input: { type: "string", short: "i" },
+      output: { type: "string", short: "o" },
+      from: { type: "string" },
+      to: { type: "string" },
+      offset: { type: "string" },
+      anchor: { type: "string", multiple: true },
+      encoding: { type: "string", default: "utf8" },
+      "dry-run": { type: "boolean", default: false },
+      help: { type: "boolean", short: "h", default: false },
+    },
+  });
+
+  if (values.help) {
+    console.log(USAGE);
+    return;
+  }
+
+  const inputPath = values.input || positionals[0];
+  if (!inputPath) {
+    console.error(USAGE);
+    throw new Error("No input file given.");
+  }
+
+  const parsed = path.parse(inputPath);
+  const defaultOut = path.join(parsed.dir, `${parsed.name}.synced${parsed.ext || ".srt"}`);
+  const outputPath = values.output || positionals[1] || defaultOut;
+
+  const { scale, offset, mode } = resolveScaleOffset({
+    from: values.from,
+    to: values.to,
+    offset: values.offset,
+    anchors: values.anchor,
+  });
+
+  const buf = fs.readFileSync(inputPath);
+  const decoded = stripBom(iconv.decode(buf, values.encoding));
+
+  const { text, count } = applyResync(decoded, scale, offset);
+
+  const summary =
+    `[info] mode=${mode} scale=${scale.toFixed(6)} ` +
+    `offset=${Math.round(offset)}ms timestamps=${count}`;
+
+  if (values["dry-run"]) {
+    console.log(summary);
+    console.log("[info] dry run — no file written");
+    const preview = previewCues(decoded, text);
+    if (preview) {
+      console.log(preview);
+    }
+    return;
+  }
+
+  fs.writeFileSync(outputPath, text, "utf8");
+  console.log(summary);
+  console.log(`Done. Read "${inputPath}", wrote "${outputPath}".`);
+}
+
+if (require.main === module) {
+  try {
+    main();
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      console.error(`Failed to resync file: input not found.`);
+      console.error("Make sure the path to the .srt file is correct.");
+    } else {
+      console.error("Failed to resync file:", err.message);
+    }
+    process.exit(1);
+  }
+}
