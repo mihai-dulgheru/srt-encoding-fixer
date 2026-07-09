@@ -4,10 +4,12 @@
   "description": "CLI tool to fix broken Romanian SRT subtitles (encoding and cedilla/comma diacritics).",
   "main": "fix-subs.js",
   "bin": {
-    "fix-subs": "./fix-subs.js"
+    "fix-subs": "./fix-subs.js",
+    "sync-subs": "./sync-subs.js"
   },
   "scripts": {
     "fix-example": "node fix-subs.js srt/jerry-broken.srt srt/jerry-fixed.srt",
+    "sync-example": "node sync-subs.js srt/example.srt srt/example.synced.srt --from 25 --to 23.976",
     "test": "node --test"
   },
   "keywords": [
@@ -17,7 +19,10 @@
     "romanian",
     "cp1250",
     "cp1252",
-    "utf8"
+    "utf8",
+    "resync",
+    "framerate",
+    "sync"
   ],
   "author": "Mihai-Nicolae Dulgheru",
   "license": "MIT",

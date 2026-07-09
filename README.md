@@ -25,3 +25,32 @@ Example:
 ```bash
 node fix-subs.js srt/jerry-broken.srt srt/jerry-fixed.srt
 ```
+
+## Resync timing
+
+`sync-subs.js` fixes subtitle *timing* (frame-rate mismatch or drift), separate
+from encoding. Every timestamp is transformed by `new = old * scale + offset`.
+
+```bash
+# Frame-rate conversion (e.g. PAL 25fps source retimed for 23.976fps video)
+node sync-subs.js movie.srt --from 25 --to 23.976
+
+# Constant shift: push all lines 2.5s earlier (+ = later, - = earlier)
+node sync-subs.js in.srt out.srt --offset -2.5s
+
+# Two-point anchor: give the correct time of the first and last line;
+# scale and offset are derived automatically.
+node sync-subs.js in.srt \
+  --anchor 00:00:10,000=00:00:12,500 \
+  --anchor 01:30:00,000=01:30:04,000
+
+# Preview without writing
+node sync-subs.js movie.srt --from 25 --to 23.976 --dry-run
+```
+
+Options: `-i/--input`, `-o/--output` (default `<input>.synced.srt`), `--from`,
+`--to`, `--offset` (units `ms`/`s`/`sec`), `--anchor` (twice), `--encoding`
+(default `utf8`), `--dry-run`, `-h/--help`.
+
+If the input encoding is also broken, run `fix-subs.js` first, then
+`sync-subs.js`.
