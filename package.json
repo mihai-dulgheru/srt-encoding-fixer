@@ -7,7 +7,8 @@
     "fix-subs": "./fix-subs.js"
   },
   "scripts": {
-    "fix-example": "node fix-subs.js srt/jerry-broken.srt srt/jerry-fixed.srt"
+    "fix-example": "node fix-subs.js srt/jerry-broken.srt srt/jerry-fixed.srt",
+    "test": "node --test"
   },
   "keywords": [
     "srt",
