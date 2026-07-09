@@ -239,7 +239,7 @@ function main() {
 
   if (values["dry-run"]) {
     console.log(summary);
-    console.log("[info] dry run — no file written");
+    console.log("[info] dry run - no file written");
     const preview = previewCues(decoded, text);
     if (preview) {
       console.log(preview);
