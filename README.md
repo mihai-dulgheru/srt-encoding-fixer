@@ -1,5 +1,7 @@
 # srt-encoding-fixer
 
+[![CI](https://github.com/mihai-dulgheru/srt-encoding-fixer/actions/workflows/ci.yml/badge.svg)](https://github.com/mihai-dulgheru/srt-encoding-fixer/actions/workflows/ci.yml)
+
 Small Node.js CLI tool to fix broken Romanian `.srt` subtitle files:
 
 - Detects the correct encoding (UTF-8, Windows-1250/1252, or common mojibake patterns).
